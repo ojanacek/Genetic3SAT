@@ -21,7 +21,7 @@ namespace Genetic3SAT
             breedingPool = new List<Chromosome>(args.PopulationSize);
         }
 
-        public Chromosome Solve(BooleanFormula formula)
+        public BooleanFormulaSolution Solve(BooleanFormula formula)
         {
             currentFormula = formula;
             chromosomeLength = formula.VariableCount;
@@ -87,7 +87,8 @@ namespace Genetic3SAT
                 }
             }
 
-            return population.OrderByDescending(ch => ch.Fitness).First();
+            var fittest = population.OrderByDescending(ch => ch.Fitness).First();
+            return new BooleanFormulaSolution(fittest, generation);
         }
 
         private Chromosome[] CreateInitialPopulation()

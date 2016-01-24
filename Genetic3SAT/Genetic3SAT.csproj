@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="ArgumentHelpers.cs" />
     <Compile Include="BooleanFormula.cs" />
+    <Compile Include="BooleanFormulaSolution.cs" />
     <Compile Include="Chromosome.cs" />
     <Compile Include="GeneticAlgorithm.cs" />
     <Compile Include="GeneticAlgorithmArgs.cs" />

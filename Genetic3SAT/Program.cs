@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using static Genetic3SAT.ArgumentHelpers;
 
@@ -42,15 +44,22 @@ namespace Genetic3SAT
             else
             {
                 var sw = new Stopwatch();
+                var solutions = new List<BooleanFormulaSolution>();
                 int i = 0;
                 foreach (var formula in SatFormulaLoader.LoadFormulas(args[0], clauseVariableratio))
                 {
                     Console.WriteLine("--- Starting formula {0} ---", ++i);
                     sw.Start();
-                    ga.Solve(formula);
+                    var solution = ga.Solve(formula);
                     sw.Stop();
+                    solutions.Add(solution);
                 }
-                Console.WriteLine("Time per formula is {0} ms.", sw.ElapsedMilliseconds / i);
+
+                Console.WriteLine("{0} ms per formula.", sw.ElapsedMilliseconds / i);
+                if (genAlgArgs.MaxGenerations < 0)
+                {
+                    Console.WriteLine("{0} generations per formula before max fitness converged.", (int) solutions.Select(s => s.GenerationCount + genAlgArgs.MaxGenerations).Average());
+                }
             }
 
             Console.WriteLine("Finished");
