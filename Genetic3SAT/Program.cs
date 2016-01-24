@@ -10,7 +10,8 @@ namespace Genetic3SAT
     {
         /* args:
         [0] - a path to a test file/directory
-        [1 ...] - GA arguments
+        [1] - # clauses / # variables ratio
+        [2 ...] - GA arguments
         */
         static void Main(string[] args)
         {
@@ -21,11 +22,19 @@ namespace Genetic3SAT
                 return;
             }
 
+            double clauseVariableratio;
+            if (!double.TryParse(args[1], out clauseVariableratio))
+            {
+                Console.WriteLine("Wrong floating point number format.");
+                Console.ReadLine();
+                return;
+            }
+
             var ga = new GeneticAlgorithm(genAlgArgs);
 
             if (Path.HasExtension(args[0]))
             {
-                var formula = SatFormulaLoader.LoadDimacsCnf(args[0]);
+                var formula = SatFormulaLoader.LoadDimacsCnf(args[0], clauseVariableratio);
                 var sw = Stopwatch.StartNew();
                 ga.Solve(formula);
                 Console.WriteLine("Total time is {0} ms.", sw.ElapsedMilliseconds);
@@ -34,7 +43,7 @@ namespace Genetic3SAT
             {
                 var sw = new Stopwatch();
                 int i = 0;
-                foreach (var formula in SatFormulaLoader.LoadFormulas(args[0]))
+                foreach (var formula in SatFormulaLoader.LoadFormulas(args[0], clauseVariableratio))
                 {
                     Console.WriteLine("--- Starting formula {0} ---", ++i);
                     sw.Start();

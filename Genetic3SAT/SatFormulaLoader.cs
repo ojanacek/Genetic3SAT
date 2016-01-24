@@ -7,15 +7,15 @@ namespace Genetic3SAT
 {
     public static class SatFormulaLoader
     {
-        public static IEnumerable<BooleanFormula> LoadFormulas(string directoryPath)
+        public static IEnumerable<BooleanFormula> LoadFormulas(string directoryPath, double clauseVariableRatio)
         {
             if (!Directory.Exists(directoryPath))
                 throw new DirectoryNotFoundException($"Directory does not exist. {directoryPath}");
 
-            return Directory.EnumerateFiles(directoryPath, "*.cnf").Select(LoadDimacsCnf);
+            return Directory.EnumerateFiles(directoryPath, "*.cnf").Select(f => LoadDimacsCnf(f, clauseVariableRatio));
         }
 
-        public static BooleanFormula LoadDimacsCnf(string filePath)
+        public static BooleanFormula LoadDimacsCnf(string filePath, double clauseVariableRatio)
         {
             int[] weights = null, formula = null;
             int variableCount = 0, clauseCount = 0;
@@ -44,6 +44,10 @@ namespace Genetic3SAT
                                                  .ToArray();
                         variableCount = preambleValues[0];
                         clauseCount = preambleValues[1];
+
+                        if ((double) clauseCount / variableCount > clauseVariableRatio)
+                            clauseCount = (int)(variableCount * clauseVariableRatio);
+
                         if (weights == null)
                             throw new InvalidDataException("No weights found.");
 
