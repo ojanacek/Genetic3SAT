@@ -13,7 +13,8 @@ namespace Genetic3SAT
         /* args:
         [0] - a path to a test file/directory
         [1] - # clauses / # variables ratio
-        [2 ...] - GA arguments
+        [2] - take first # of files from the test directory
+        [3 ...] - GA arguments
         */
         static void Main(string[] args)
         {
@@ -46,7 +47,7 @@ namespace Genetic3SAT
                 var sw = new Stopwatch();
                 var solutions = new List<BooleanFormulaSolution>();
                 int i = 0;
-                foreach (var formula in SatFormulaLoader.LoadFormulas(args[0], clauseVariableratio))
+                foreach (var formula in SatFormulaLoader.LoadFormulas(args[0], clauseVariableratio).Take(int.Parse(args[2])))
                 {
                     Console.WriteLine("--- Starting formula {0} ---", ++i);
                     sw.Start();
